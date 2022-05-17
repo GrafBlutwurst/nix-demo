@@ -36,6 +36,7 @@
         devShells =  {
           #So lets create a shell with the same version as we fetched the tarball using the default argument before. 
           emptyShellTarBall = emptyShell {pkgs = tarballPkgs;};
+          multiNode = import ./nix-shells/multiNode.nix {inherit pkgs;};
         };
       }
     );
