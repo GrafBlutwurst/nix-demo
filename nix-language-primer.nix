@@ -127,7 +127,6 @@ in
   };
 
   #nix also comes with a bunch of builtin functions see https://nixos.org/manual/nix/stable/expressions/builtins.html
-
   builtinExamples = with builtins; {
     #Check if 5 is in aList 
     contains = elem 5 aList;
@@ -152,8 +151,35 @@ in
           x: if x > 1 then x + 1 else x * 2
         )
         aList;
+  };
 
+  #Some more syntactical things you should be aware of 
+  varia = {
+    #records don't always have to be fully expanded you can use dot notation
+    recordShorthand =
+      let
+        this = {
+          a = {
+            b = 1;
+            c = 2;
+          };
+        };
+        that = {
+          a.b = 1;
+          a.c = 2;
+        };
+      in
+      this == that;
 
+    #There's also dynamic key navigation
+    dynamicKeys =
+      let
+        myKey = "foo";
+        thing = {
+          foo = 10;
+        };
+      in
+      thing.${myKey};
   };
 
 }
