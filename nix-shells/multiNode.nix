@@ -1,7 +1,7 @@
-{
-  pkgs
-}: let
-  
+{ pkgs
+}:
+let
+
   #Use one of these configs as buildInputs, start the shell. run `npm version` and think about what's going on 
   yikesOne = with pkgs;[
     nodejs-18_x
@@ -13,8 +13,8 @@
     nodejs-18_x
   ];
 
-  
-  fixingIt = with pkgs; let 
+
+  fixingIt = with pkgs; let
     #pkgs.writeShellScriptBin is a handy little function that allows you quickly and easily write shell scripts as part of a nix 
     #This indeed defines a full blown package that goes into your nix store 
     #since we use string interpolation and refer to nodejs-16_x we also introduced a transitive dependency 
@@ -25,14 +25,16 @@
     node16 = writeShellScriptBin "npm16" ''
       ${nodejs-16_x}/bin/npm $@
     '';
-  in [
+  in
+  [
     node16
     nodejs-18_x
   ];
 
-in pkgs.mkShell {
+in
+pkgs.mkShell {
   name = "multiNode-shell";
-  
+
   #Remember emptyShell.nix and how buildInputs are added to your PATH. sooo that's not good.
   #we can't "rename" a package but we can wrap it, that fixes the issue of not having one of the npm versions on your path available 
   buildInputs = yikesOne;
