@@ -30,12 +30,6 @@ let
     "baz"
   ];
 
-  #For usage later, note that Let bindings are self-referential. You can already use previously defined things in further let-bindings 
-  aListOfRecords = [
-    aRecord
-    { a = 15; b = "brrrr"; }
-  ];
-
   #Functions in nix are allways fully curries. I.e. there are no functions that accept multiple arguments
   identityFunction = a: a;
   #So something like this in other languages would look e.g. like `x -> y -> x+y` 
@@ -130,6 +124,36 @@ in
 
     #Since this import points to a file that is a nix function we can also just call it 
     directly = import ./somethingToImport.nix { x = 1; y = 1; };
+  };
+
+  #nix also comes with a bunch of builtin functions see https://nixos.org/manual/nix/stable/expressions/builtins.html
+
+  builtinExamples = with builtins; {
+    #Check if 5 is in aList 
+    contains = elem 5 aList;
+
+    #Wait fetching stuff from git is a builtin ? oO 
+    #Jup because that's how you actually get to packages in nix. Fetch source and build it 
+    #Note it's guarded by a sha hash, protecting you from dependency hijacking and guaranteeing hash stability
+    #The nix-prefetch-git command is your friend! nix-prefetch-git --url git@github.com:GrafBlutwurst/nix-demo.git 
+    #You might wanna spin up a repl, load the expression and look at the result of this. We just put something into the nix store!
+    gettingSourceCode = fetchGit {
+      url = "git@github.com:GrafBlutwurst/nix-demo.git";
+      rev = "81aed78888cc5e99e87fb19491cfc7f5d72a4583";
+    };
+
+    #Of course all the usual things you'd expect are here as well like a let 
+    mapSomething =
+      let
+        aList = [ 1 2 3 ];
+      in
+      map
+        (
+          x: if x > 1 then x + 1 else x * 2
+        )
+        aList;
+
+
   };
 
 }
